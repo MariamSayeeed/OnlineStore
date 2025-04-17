@@ -29,15 +29,12 @@ namespace Presistance
             }
 
             // Data Seeding
+            // 1.Seeding ProductType
+            // 2.Seeding ProductBrand
+            // 3.Seeding Product
 
             try
             {
-
-
-                // 1.Seeding ProductType
-                // 2.Seeding ProductBrand
-                // 3.Seeding Product
-
                 // ---------------   Types
                 if (!_context.ProductTypes.Any())
                 {
@@ -106,4 +103,3 @@ namespace Presistance
     }
 }
 // ..\Infrastructure\Presistance\Data\Seeding\types.json
-// C:\Users\Online\source\repos\OnlineStore\Infrastructure\Presistance\Data\Seeding\types.json

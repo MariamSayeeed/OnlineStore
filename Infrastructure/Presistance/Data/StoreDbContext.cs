@@ -29,6 +29,13 @@ namespace Presistance.Data
             //modelBuilder.ApplyConfigurationsFromAssembly(typeof(StoreDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyReference).Assembly);
             base.OnModelCreating(modelBuilder);
+
+            //   Data Seeding
+
+
+
+
+
         }
 
     }

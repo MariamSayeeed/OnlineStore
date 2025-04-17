@@ -1,13 +1,15 @@
 
+using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Presistance;
 using Presistance.Data;
 
 namespace OnlineStore
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -23,16 +25,22 @@ namespace OnlineStore
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-
-
-
-
-
+            builder.Services.AddScoped<IDbInitializer,DbInitializer>();  // Allow DI for DbInitializer
 
 
 
             //  ----------------------  Build    ------------------
             var app = builder.Build();
+
+            #region Seeding
+
+            using var scope = app.Services.CreateScope();
+
+            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();  // ask CLR to Create obj from DbInitializer 
+
+            await dbInitializer.InitialzeAsync() ;
+
+            #endregion
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

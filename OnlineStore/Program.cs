@@ -27,6 +27,7 @@ namespace OnlineStore
 
             builder.Services.AddScoped<IDbInitializer,DbInitializer>();  // Allow DI for DbInitializer
 
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 
             //  ----------------------  Build    ------------------

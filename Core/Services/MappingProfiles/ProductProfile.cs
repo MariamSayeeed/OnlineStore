@@ -20,7 +20,7 @@ namespace Services.MappingProfiles
                 o=> o.MapFrom(s=>s.ProductType.Name));
 
 
-            CreateMap<ProductDto, Product>();
+            //CreateMap<ProductDto, Product>();
             CreateMap<ProductBrand, BrandDto>();
             CreateMap<ProductType, TypeDto>();
         }

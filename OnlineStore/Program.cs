@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Presistance;
 using Presistance.Data;
+using Services;
+using Services.Abstractions;
+
+using AssemblyMapping = Services.AssemblyReferece;
 
 namespace OnlineStore
 {
@@ -26,8 +30,12 @@ namespace OnlineStore
             });
 
             builder.Services.AddScoped<IDbInitializer,DbInitializer>();  // Allow DI for DbInitializer
-
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+            builder.Services.AddScoped<IServiceManager,ServiceManager>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddAutoMapper(typeof(AssemblyMapping).Assembly);   // DI IMapper
+
+
 
 
             //  ----------------------  Build    ------------------

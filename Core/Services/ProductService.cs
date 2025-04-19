@@ -21,7 +21,7 @@ namespace Services
             return result;
         }
 
-        public async Task<ProductDto> GetProductByIdAsync(int id)
+        public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
             var product = await unitOfWork.GetRepository<Product, int>().GetAsync(id);
             if (product == null) return null;

@@ -35,7 +35,7 @@ namespace OnlineStore
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddAutoMapper(typeof(AssemblyMapping).Assembly);   // DI IMapper
 
-
+            //builder.
 
 
             //  ----------------------  Build    ------------------
@@ -57,6 +57,8 @@ namespace OnlineStore
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

@@ -29,12 +29,29 @@ namespace Presentation
             return Ok(result);    // 200
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAllProductById(int id)
+        {
+            var product = await _serviceManager.ProductService.GetProductByIdAsync(id);
+            if (product == null) return NotFound();   // 404
+            return Ok(product);  // 200
+        }
 
+        [HttpGet ("brands")]
+        public async Task <IActionResult> GetProductBrands()
+        {
+            var brands = await _serviceManager.ProductService.GetAllBrandsAsync();
+            if (brands == null) return NotFound();
+            return Ok(brands);
+        }
 
-
-
-
-
+        [HttpGet ("types")]
+        public async Task<IActionResult> GetProductTypes()
+        {
+            var types = await _serviceManager.ProductService.GetAllTypesAsync();
+            if (types == null) return NotFound();
+            return Ok(types);
+        }
 
     }
 }

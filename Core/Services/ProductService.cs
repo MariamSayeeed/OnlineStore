@@ -2,6 +2,7 @@
 using Domain.Contracts;
 using Domain.Models;
 using Services.Abstractions;
+using Services.Specifications;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -14,16 +15,26 @@ namespace Services
     public class ProductService (IUnitOfWork unitOfWork , IMapper mapper) : IProductService
     {
         
-        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
+        //public async Task<IEnumerable<ProductDto>> GetAllProductsAsync(int? brandId, int? typeId , string? sort, int pageIndex = 1, int pageSize = 5)
+        public async Task<PaginationResponse<ProductDto>> GetAllProductsAsync(ProductSpecificationParamters specParams)
         {
-            var products = await unitOfWork.GetRepository<Product, int>().GetAllAsync();
+            var spec = new ProductWithBrandsAndTypesSpecifications(specParams);
+
+            var products = await unitOfWork.GetRepository<Product, int>().GetAllAsync(spec);
+
+            var specCount = new ProductWithCountSpecification(specParams);
+
+            var count = await unitOfWork.GetRepository<Product,int>().CountAsync(specCount);
+
             var result = mapper.Map<IEnumerable<ProductDto>>(products);
-            return result;
+
+            return new PaginationResponse<ProductDto>(specParams.PageIndex , specParams.PageSize , count , result);
         }
 
         public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
-            var product = await unitOfWork.GetRepository<Product, int>().GetAsync(id);
+            var spec = new ProductWithBrandsAndTypesSpecifications(id);
+            var product = await unitOfWork.GetRepository<Product, int>().GetAsync(spec , id);
             if (product == null) return null;
             
             var result = mapper.Map<ProductDto>(product);
@@ -32,6 +43,7 @@ namespace Services
 
         public async Task<IEnumerable<TypeDto>> GetAllTypesAsync()
         {
+            //var spec = new ProductWithBrandsAndTypesSpecifications();
             var types = await unitOfWork.GetRepository<ProductType, int>().GetAllAsync();
             var result = mapper.Map <IEnumerable <TypeDto>> (types);
             return result;

@@ -11,17 +11,36 @@ namespace Presistance
 {
     public class SpecificationEvaluator
     {
-        public static IQueryable<TEntity> GetQuery<TEntity , TKey>(IQueryable<TEntity> inputQuery,ISpecifications<TEntity,TKey> specifications)
+        public static IQueryable<TEntity> GetQuery<TEntity , TKey>(IQueryable<TEntity> inputQuery,ISpecifications<TEntity,TKey> spec)
             where TEntity : BaseEntity<TKey>
         {
             var query = inputQuery;
-            if (specifications.Criteria is not null)
+            if (spec.Criteria is not null)
             {
-              query = query.Where(specifications.Criteria);
+              query = query.Where(spec.Criteria);
             }
-            //specifications.
+            // Order By
+            if(spec.OrderBy is not null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
 
-            query = specifications.IncludeExpressions.Aggregate(query,
+            else if(spec.OrderByDescending is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+                
+
+            // Pagination
+
+            if (spec.IsPagination)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
+
+            //specifications
+
+            query = spec.IncludeExpressions.Aggregate(query,
                 (currentQuery,
                 includeExpression) => currentQuery.Include(includeExpression));
 

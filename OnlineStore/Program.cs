@@ -2,6 +2,7 @@
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OnlineStore_Api.Middlewares;
 using Presistance;
 using Presistance.Data;
 using Services;
@@ -35,7 +36,7 @@ namespace OnlineStore
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddAutoMapper(typeof(AssemblyMapping).Assembly);   // DI IMapper
 
-            //builder.
+            
 
 
             //  ----------------------  Build    ------------------
@@ -50,6 +51,9 @@ namespace OnlineStore
             await dbInitializer.InitialzeAsync() ;
 
             #endregion
+
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

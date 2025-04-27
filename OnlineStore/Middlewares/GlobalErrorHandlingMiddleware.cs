@@ -1,4 +1,5 @@
-﻿using Shared.ErrorModels;
+﻿using Domain.Exceptions;
+using Shared.ErrorModels;
 
 namespace OnlineStore_Api.Middlewares
 {
@@ -38,10 +39,17 @@ namespace OnlineStore_Api.Middlewares
                     ErrorMessage = ex.Message
                 };
 
+                response.StatusCode = ex switch
+                {
+                    NotFoundException => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status500InternalServerError
+                };
+
+                context.Response.StatusCode = response.StatusCode;
+
                 // Return Response
 
                 await context.Response.WriteAsJsonAsync(response);
-            
             }
         }
 

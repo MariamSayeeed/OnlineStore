@@ -1,5 +1,7 @@
 
 using Domain.Contracts;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnlineStore_Api.Middlewares;
@@ -7,7 +9,7 @@ using Presistance;
 using Presistance.Data;
 using Services;
 using Services.Abstractions;
-
+using Shared.ErrorModels;
 using AssemblyMapping = Services.AssemblyReferece;
 
 namespace OnlineStore
@@ -36,7 +38,26 @@ namespace OnlineStore
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddAutoMapper(typeof(AssemblyMapping).Assembly);   // DI IMapper
 
-            
+            builder.Services.Configure<ApiBehaviorOptions>(config =>
+            {
+                config.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState.Where(m => m.Value.Errors.Any())
+                    .Select(m=> new ValidationError()
+                    {
+                        FeildName = m.Key,
+                        ErrorsMessage = m.Value.Errors.Select(e => e.ErrorMessage)
+                    });
+
+
+                    var response = new ValidationErrorResponse()
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(response);
+                };
+            });
 
 
             //  ----------------------  Build    ------------------
